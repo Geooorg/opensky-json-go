@@ -1,7 +1,8 @@
 package datatypes
 
 type FlightData struct {
-	Id          uint32
+	Id          string
+	Country     string
 	DateAndTime uint32
 	Altitude    float32
 	Icao        string
