@@ -1,6 +1,6 @@
 package datatypes
 
 type OpenSkyJsonStruct struct {
-	Time              int             `json:"time"`
+	Time              float64         `json:"time"`
 	StatesListOfLists [][]interface{} `json:"states"`
 }
