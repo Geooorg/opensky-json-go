@@ -4,12 +4,12 @@ type FlightData struct {
 	Id          string
 	Country     string
 	DateAndTime uint32
-	Altitude    float32
+	Altitude    float64
 	Icao        string
 	Callsign    string
-	Latitude    float32
-	Longitude   float32
-	Distance    float32
+	Latitude    float64
+	Longitude   float64
+	Distance    float64
 	After22     bool
 	After24     bool
 	Landing     bool
