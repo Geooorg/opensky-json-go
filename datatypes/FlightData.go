@@ -13,5 +13,5 @@ type FlightData struct {
 	After22     bool
 	After24     bool
 	Landing     bool
-	Degree      uint8
+	Degree      float64
 }
