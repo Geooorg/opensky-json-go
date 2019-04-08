@@ -2,7 +2,6 @@ package parser
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	opensky "github.com/Geooorg/opensky-json-go/datatypes"
 	"io"
@@ -11,13 +10,6 @@ import (
 )
 
 const OpenskyNetworkUrl = "https://opensky-network.org/api/states/all"
-
-func unmarshall(jsonStr []byte) {
-
-	var states opensky.OpenSkyJsonStruct
-
-	json.Unmarshal(jsonStr, &states)
-}
 
 func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData {
 	var result = make([]opensky.FlightData, len(states.StatesListOfLists))
@@ -54,7 +46,7 @@ func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData 
 	return result
 }
 
-func readJsonFromOpenSky() ([]byte, error) {
+func ReadJsonFromOpenSky() ([]byte, error) {
 	log.Printf("Reading flight JSON from %s", OpenskyNetworkUrl)
 	response, err := http.Get(OpenskyNetworkUrl)
 	defer response.Body.Close()
