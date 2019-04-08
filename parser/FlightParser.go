@@ -1,4 +1,4 @@
-package main
+package parser
 
 import (
 	"bytes"
@@ -7,28 +7,19 @@ import (
 	opensky "github.com/Geooorg/opensky-json-go/datatypes"
 	"io"
 	"log"
-	//"log"
 	"net/http"
 )
 
-const OPENSKY_NETWORK_URL = "https://opensky-network.org/api/states/all"
+const OpenskyNetworkUrl = "https://opensky-network.org/api/states/all"
 
-func main() {
-
-	jsonStr, e := readJsonFromOpenSky()
-	if e != nil {
-		log.Fatal("Could not read from " + OPENSKY_NETWORK_URL)
-	}
+func unmarshall(jsonStr []byte) {
 
 	var states opensky.OpenSkyJsonStruct
 
 	json.Unmarshal(jsonStr, &states)
-
-	flightData := convertToFlightData(states)
-	log.Printf("Found %d flights", len(flightData))
 }
 
-func convertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData {
+func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData {
 	var result = make([]opensky.FlightData, len(states.StatesListOfLists))
 
 	for i := 0; i < len(states.StatesListOfLists); i++ {
@@ -64,8 +55,8 @@ func convertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData 
 }
 
 func readJsonFromOpenSky() ([]byte, error) {
-	log.Printf("Reading flight JSON from %s", OPENSKY_NETWORK_URL)
-	response, err := http.Get(OPENSKY_NETWORK_URL)
+	log.Printf("Reading flight JSON from %s", OpenskyNetworkUrl)
+	response, err := http.Get(OpenskyNetworkUrl)
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {

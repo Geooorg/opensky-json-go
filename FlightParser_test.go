@@ -3,14 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	opensky "github.com/Geooorg/opensky-json-go/datatypes"
+	"github.com/Geooorg/opensky-json-go/datatypes"
+	"github.com/Geooorg/opensky-json-go/parser"
 	"io/ioutil"
-	"log"
+	"testing"
 
 	"os"
 )
 
-func testDataCanBeConverted() {
+func TestDataCanBeConverted(t *testing.T) {
 	jsonFile, err := os.Open("data/test.json")
 	if err != nil {
 		fmt.Println(err)
@@ -18,13 +19,14 @@ func testDataCanBeConverted() {
 
 	defer jsonFile.Close()
 
-	var states opensky.OpenSkyJsonStruct
+	var states datatypes.OpenSkyJsonStruct
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	json.Unmarshal(byteValue, &states)
 
-	flightData := convertToFlightData(states)
+	flightData := parser.ConvertToFlightData(states)
+
 	if len(flightData) != 2039 {
-		log.Fatal("Size of parsed objects does not match")
+		t.Errorf("Size of parsed objects is %d, expected are 2039", len(flightData))
 	}
 }
