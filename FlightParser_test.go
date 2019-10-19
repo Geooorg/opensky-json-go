@@ -1,10 +1,10 @@
 package main
 
 import (
+	"./datatypes"
+	"./parser"
 	"encoding/json"
 	"fmt"
-	"github.com/Geooorg/opensky-json-go/datatypes"
-	"github.com/Geooorg/opensky-json-go/parser"
 	"io/ioutil"
 	"log"
 	"testing"
