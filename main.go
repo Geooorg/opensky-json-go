@@ -11,7 +11,7 @@ func main() {
 
 	jsonStr, e := parser.ReadJsonFromOpenSky()
 	if e != nil {
-		log.Fatal("Could not read from " + parser.OpenskyNetworkUrl)
+		log.Fatal("Could not read from " + parser.OPENSKY_URL)
 	}
 
 	var states datatypes.OpenSkyJsonStruct
