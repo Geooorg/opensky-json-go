@@ -8,9 +8,18 @@ import (
 	"io/ioutil"
 	"log"
 	"testing"
-
 	"os"
 )
+
+func TestDataCanBeRetrieved(t *testing.T) {
+	os.Setenv("OPENSKY_LATITUDE_MIN", "53.477820")
+	os.Setenv("OPENSKY_LONGITUDE_MIN", "9.760569")
+	os.Setenv("OPENSKY_LATITUDE_MAX", "53.730380")
+	os.Setenv("OPENSKY_LONGITUDE_MAX", "10.326908")
+
+	url := parser.GetParameterizedUrl()
+	log.Printf(url)
+}
 
 func TestDataCanBeConverted(t *testing.T) {
 	jsonFile, err := os.Open("data/test.json")

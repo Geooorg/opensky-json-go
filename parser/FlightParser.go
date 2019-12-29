@@ -1,16 +1,19 @@
 package parser
 
 import (
+	opensky  "github.com/Geooorg/opensky-json-go/datatypes"
+//	opensky "../datatypes" //  "github.com/Geooorg/opensky-json-go/datatypes"
 	"bytes"
 	"errors"
-	opensky "github.com/Geooorg/opensky-json-go/datatypes" // "../datatypes"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
-const OPENSKY_URL = "https://opensky-network.org/api/states/all"
+const OPENSKY_URL_TEMPLATE = "https://opensky-network.org/api/states/all?lamin=%s&lomin=%s&lamax=%s&lomax=%s"
 const HTTP_TIMEOUT = 10
 
 func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData {
@@ -49,12 +52,15 @@ func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData 
 }
 
 func ReadJsonFromOpenSky() ([]byte, error) {
-	log.Printf("INFO: Reading flight JSON from %s", OPENSKY_URL)
+
+	paramaterizedUrl := GetParameterizedUrl()
+
+	log.Printf("INFO: Reading flight JSON from %s", paramaterizedUrl)
 
 	client := http.Client{
 		Timeout: HTTP_TIMEOUT * time.Second,
 	}
-	response, err := client.Get(OPENSKY_URL)
+	response, err := client.Get(paramaterizedUrl)
 	if err != nil {
 		log.Printf("WARN: Reading failed! :-( ... %s", err.Error())
 		return nil, err
@@ -71,4 +77,14 @@ func ReadJsonFromOpenSky() ([]byte, error) {
 		return nil, err
 	}
 	return data.Bytes(), nil
+}
+
+func GetParameterizedUrl() string {
+
+	lamin := os.Getenv("OPENSKY_LATITUDE_MIN")
+	lomin := os.Getenv("OPENSKY_LONGITUDE_MIN")
+	lamax := os.Getenv("OPENSKY_LATITUDE_MAX")
+	lomax := os.Getenv("OPENSKY_LONGITUDE_MAX")
+
+	return fmt.Sprintf(OPENSKY_URL_TEMPLATE, lamin, lomin, lamax, lomax)
 }
