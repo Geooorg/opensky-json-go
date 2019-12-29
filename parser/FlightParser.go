@@ -11,7 +11,7 @@ import (
 )
 
 const OPENSKY_URL = "https://opensky-network.org/api/states/all"
-const HTTP_TIMEOUT = 2
+const HTTP_TIMEOUT = 10
 
 func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData {
 	var result = make([]opensky.FlightData, len(states.StatesListOfLists))
@@ -49,12 +49,16 @@ func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData 
 }
 
 func ReadJsonFromOpenSky() ([]byte, error) {
-	log.Printf("Reading flight JSON from %s", OPENSKY_URL)
+	log.Printf("INFO: Reading flight JSON from %s", OPENSKY_URL)
 
 	client := http.Client{
 		Timeout: HTTP_TIMEOUT * time.Second,
 	}
 	response, err := client.Get(OPENSKY_URL)
+	if err != nil {
+		log.Printf("WARN: Reading failed! :-( ... %s", err.Error())
+		return nil, err
+	}
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
