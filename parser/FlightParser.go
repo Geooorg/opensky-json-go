@@ -1,8 +1,8 @@
 package parser
 
 import (
-	opensky  "github.com/Geooorg/opensky-json-go/datatypes"
-//	opensky "../datatypes" //  "github.com/Geooorg/opensky-json-go/datatypes"
+	//opensky  "github.com/Geooorg/opensky-json-go/datatypes"
+	opensky "../datatypes" //  "github.com/Geooorg/opensky-json-go/datatypes"
 	"bytes"
 	"errors"
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -25,9 +26,9 @@ func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData 
 
 		f := opensky.FlightData{}
 
-		f.Id = state[0].(string)
-		f.Callsign = state[1].(string)
-		f.Country = state[2].(string)
+		f.Id = strings.TrimSpace(state[0].(string))
+		f.Callsign = strings.TrimSpace(state[1].(string))
+		f.Country = strings.TrimSpace(state[2].(string))
 
 		if state[6] != nil {
 			f.Latitude = state[6].(float64)
