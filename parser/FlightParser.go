@@ -1,9 +1,9 @@
 package parser
 
 import (
-	opensky "../datatypes"
 	"bytes"
 	"errors"
+	opensky "github.com/Geooorg/opensky-json-go/datatypes" // "../datatypes"
 	"io"
 	"log"
 	"net/http"
