@@ -35,7 +35,7 @@ func TestDataCanBeConverted(t *testing.T) {
 
 	defer jsonFile.Close()
 
-	var states OpenSkyJsonStruct
+	var states parser.OpenSkyJsonStruct
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	json.Unmarshal(byteValue, &states)
