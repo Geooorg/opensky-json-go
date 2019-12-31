@@ -1,7 +1,6 @@
 package main
 
 import (
-	"./datatypes" //"github.com/Geooorg/opensky-json-go/datatypes"
 	"./parser"
 	"encoding/json"
 	"log"
@@ -11,10 +10,10 @@ func main() {
 
 	jsonStr, e := parser.ReadJsonFromOpenSky()
 	if e != nil {
-		log.Fatal("Could not read from " + parser.OPENSKY_URL)
+		log.Fatal("Could not read data from OpenSky")
 	}
 
-	var states datatypes.OpenSkyJsonStruct
+	var states parser.OpenSkyJsonStruct
 
 	json.Unmarshal(jsonStr, &states)
 

@@ -1,8 +1,6 @@
 package parser
 
 import (
-	//opensky  "github.com/Geooorg/opensky-json-go/datatypes"
-	opensky "../datatypes" //  "github.com/Geooorg/opensky-json-go/datatypes"
 	"bytes"
 	"errors"
 	"fmt"
@@ -14,21 +12,32 @@ import (
 	"time"
 )
 
-const OPENSKY_URL_TEMPLATE = "https://opensky-network.org/api/states/all?lamin=%s&lomin=%s&lamax=%s&lomax=%s"
+const OPENSKY_URL_PROTOCOL = "https://"
+const OPENSKY_URL_TEMPLATE =  "opensky-network.org/api/states/all?lamin=%s&lomin=%s&lamax=%s&lomax=%s"
+const OPENSKY_AUTHENTICATON_PREFIX_TEMPLATE = "%s:%s@" + OPENSKY_URL_TEMPLATE
 const HTTP_TIMEOUT = 10
 
-func ConvertToFlightData(states opensky.OpenSkyJsonStruct) []opensky.FlightData {
-	var result = make([]opensky.FlightData, len(states.StatesListOfLists))
+type OpenSkyJsonStruct struct {
+	Time              int             `json:"time"`
+	StatesListOfLists [][]interface{} `json:"states"`
+}
+
+func ConvertToFlightData(states OpenSkyJsonStruct) []FlightData {
+	var result = make([]FlightData, len(states.StatesListOfLists))
 
 	for i := 0; i < len(states.StatesListOfLists); i++ {
 
 		state := states.StatesListOfLists[i]
 
-		f := opensky.FlightData{}
+		f := FlightData{}
 
 		f.Id = strings.TrimSpace(state[0].(string))
 		f.Callsign = strings.TrimSpace(state[1].(string))
 		f.Country = strings.TrimSpace(state[2].(string))
+
+		if state[3] != nil {
+			f.DateAndTime = state[3].(float64)
+		}
 
 		if state[6] != nil {
 			f.Latitude = state[6].(float64)
@@ -56,14 +65,14 @@ func ReadJsonFromOpenSky() ([]byte, error) {
 
 	paramaterizedUrl := GetParameterizedUrl()
 
-	log.Printf("INFO: Reading flight JSON from %s", paramaterizedUrl)
+	log.Printf("DEBUG: Reading flight JSON from %s", paramaterizedUrl)
 
 	client := http.Client{
 		Timeout: HTTP_TIMEOUT * time.Second,
 	}
 	response, err := client.Get(paramaterizedUrl)
 	if err != nil {
-		log.Printf("WARN: Reading failed! :-( ... %s", err.Error())
+		log.Printf("WARN: Reading OpenSky data failed! :-( ... %s", err.Error())
 		return nil, err
 	}
 	defer response.Body.Close()
@@ -82,10 +91,17 @@ func ReadJsonFromOpenSky() ([]byte, error) {
 
 func GetParameterizedUrl() string {
 
+	user, withAuthentication := os.LookupEnv("OPENSKY_USER")
+	password := os.Getenv("OPENSKY_PASSWORD")
+
 	lamin := os.Getenv("OPENSKY_LATITUDE_MIN")
 	lomin := os.Getenv("OPENSKY_LONGITUDE_MIN")
 	lamax := os.Getenv("OPENSKY_LATITUDE_MAX")
 	lomax := os.Getenv("OPENSKY_LONGITUDE_MAX")
 
-	return fmt.Sprintf(OPENSKY_URL_TEMPLATE, lamin, lomin, lamax, lomax)
+	if !withAuthentication {
+		return fmt.Sprintf(OPENSKY_URL_PROTOCOL + OPENSKY_URL_TEMPLATE, lamin, lomin, lamax, lomax)
+	}
+
+	return fmt.Sprintf(OPENSKY_URL_PROTOCOL + OPENSKY_AUTHENTICATON_PREFIX_TEMPLATE, user, password, lamin, lomin, lamax, lomax)
 }
