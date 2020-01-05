@@ -6,16 +6,15 @@ import (
 )
 
 type FlightData struct {
-	Id          string
-	Country     string
-	DateAndTime float64
-	Altitude    float64
-	Icao        string
-	Callsign    string
-	Latitude    float64
-	Longitude   float64
-	Landing     bool
-	Degree      float64
+	Country   string
+	Timestamp int
+	Altitude  float64
+	Icao      string
+	Callsign  string
+	Latitude  float64
+	Longitude float64
+	Landing   bool
+	Degree    float64
 }
 
 func (it FlightData) String() string {
@@ -25,9 +24,8 @@ func (it FlightData) String() string {
 	if it.Landing {
 		isLanding = "true"
 	}
-	buffer.WriteString("Id " + it.Id)
 	buffer.WriteString(", Country " + it.Country)
-	buffer.WriteString(", DateAndTime " + fmt.Sprint(it.DateAndTime))
+	buffer.WriteString(", Timestamp " + fmt.Sprint(it.Timestamp))
 	buffer.WriteString(", Altitude " + fmt.Sprintf("%f", it.Altitude))
 	buffer.WriteString(", Icao " + it.Icao)
 	buffer.WriteString(", Callsign " + it.Callsign)

@@ -13,7 +13,7 @@ import (
 )
 
 const OPENSKY_URL_PROTOCOL = "https://"
-const OPENSKY_URL_TEMPLATE =  "opensky-network.org/api/states/all?lamin=%s&lomin=%s&lamax=%s&lomax=%s"
+const OPENSKY_URL_TEMPLATE = "opensky-network.org/api/states/all?lamin=%s&lomin=%s&lamax=%s&lomax=%s"
 const OPENSKY_AUTHENTICATON_PREFIX_TEMPLATE = "%s:%s@" + OPENSKY_URL_TEMPLATE
 const HTTP_TIMEOUT = 10
 
@@ -31,12 +31,12 @@ func ConvertToFlightData(states OpenSkyJsonStruct) []FlightData {
 
 		f := FlightData{}
 
-		f.Id = strings.TrimSpace(state[0].(string))
+		f.Icao = strings.TrimSpace(state[0].(string))
 		f.Callsign = strings.TrimSpace(state[1].(string))
 		f.Country = strings.TrimSpace(state[2].(string))
 
 		if state[3] != nil {
-			f.DateAndTime = state[3].(float64)
+			f.Timestamp = int(state[3].(float64))
 		}
 
 		if state[6] != nil {
@@ -100,8 +100,8 @@ func GetParameterizedUrl() string {
 	lomax := os.Getenv("OPENSKY_LONGITUDE_MAX")
 
 	if !withAuthentication {
-		return fmt.Sprintf(OPENSKY_URL_PROTOCOL + OPENSKY_URL_TEMPLATE, lamin, lomin, lamax, lomax)
+		return fmt.Sprintf(OPENSKY_URL_PROTOCOL+OPENSKY_URL_TEMPLATE, lamin, lomin, lamax, lomax)
 	}
 
-	return fmt.Sprintf(OPENSKY_URL_PROTOCOL + OPENSKY_AUTHENTICATON_PREFIX_TEMPLATE, user, password, lamin, lomin, lamax, lomax)
+	return fmt.Sprintf(OPENSKY_URL_PROTOCOL+OPENSKY_AUTHENTICATON_PREFIX_TEMPLATE, user, password, lamin, lomin, lamax, lomax)
 }

@@ -52,8 +52,8 @@ func TestDataCanBeConverted(t *testing.T) {
 
 	flight_EZY64KP := flightData[1]
 	assert.Equal(t, flight_EZY64KP.Callsign, "EZY64KP")
-	assert.Equal(t, flight_EZY64KP.Id, "406b90", "Icao is 406b90")
-	assert.Equal(t, flight_EZY64KP.DateAndTime, "1483905638", "Unix timestamp matches")
+	assert.Equal(t, flight_EZY64KP.Icao, "406b90", "Icao is 406b90")
+	assert.Equal(t, flight_EZY64KP.Timestamp, 1483905638, "Unix timestamp matches")
 	assert.Equal(t, flight_EZY64KP.Altitude, 3505.2)
 	assert.Equal(t, flight_EZY64KP.Latitude, 49.2815)
 	assert.Equal(t, flight_EZY64KP.Longitude, 1.9863)
