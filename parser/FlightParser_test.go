@@ -1,7 +1,6 @@
-package main
+package parser
 
 import (
-	"./parser"
 	"encoding/json"
 	"fmt"
 	"github.com/stretchr/testify/assert"
@@ -17,13 +16,13 @@ func TestUrlIsParameterizedCorrectly(t *testing.T) {
 	os.Setenv("OPENSKY_LATITUDE_MAX", "53.730380")
 	os.Setenv("OPENSKY_LONGITUDE_MAX", "10.326908")
 
-	url := parser.GetParameterizedUrl()
+	url := GetParameterizedUrl()
 	assert.Equal(t, url, "https://opensky-network.org/api/states/all?lamin=53.477820&lomin=9.760569&lamax=53.730380&lomax=10.326908", "URL without authentication matches")
 
 	os.Setenv("OPENSKY_USER", "sampleUser")
 	os.Setenv("OPENSKY_PASSWORD", "verysecret!")
 
-	urlWithAuthentication := parser.GetParameterizedUrl()
+	urlWithAuthentication := GetParameterizedUrl()
 	assert.Equal(t, urlWithAuthentication, "https://sampleUser:verysecret!@opensky-network.org/api/states/all?lamin=53.477820&lomin=9.760569&lamax=53.730380&lomax=10.326908", "URL with authentication matches")
 }
 
@@ -35,12 +34,12 @@ func TestDataCanBeConverted(t *testing.T) {
 
 	defer jsonFile.Close()
 
-	var states parser.OpenSkyJsonStruct
+	var states OpenSkyJsonStruct
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	json.Unmarshal(byteValue, &states)
 
-	flightData := parser.ConvertToFlightData(states)
+	flightData := ConvertToFlightData(states)
 
 	if len(flightData) != 2039 {
 		t.Errorf("Size of parsed objects is %d, expected are 2039", len(flightData))

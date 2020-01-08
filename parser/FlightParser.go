@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -17,9 +18,28 @@ const OPENSKY_URL_TEMPLATE = "opensky-network.org/api/states/all?lamin=%s&lomin=
 const OPENSKY_AUTHENTICATON_PREFIX_TEMPLATE = "%s:%s@" + OPENSKY_URL_TEMPLATE
 const HTTP_TIMEOUT = 10
 
+type Api struct {
+}
+
+type PublicApi interface {
+	ReadFromWebserviceAndConvertJsonToFlightData() []FlightData
+}
+
 type OpenSkyJsonStruct struct {
 	Time              int             `json:"time"`
 	StatesListOfLists [][]interface{} `json:"states"`
+}
+
+func (api Api) ReadFromWebserviceAndConvertJsonToFlightData() []FlightData {
+	jsonStr, e := ReadJsonFromOpenSky()
+	if e != nil {
+		log.Print("Could not read data from OpenSky")
+		return nil
+	}
+
+	var states OpenSkyJsonStruct
+	json.Unmarshal(jsonStr, &states)
+	return ConvertToFlightData(states)
 }
 
 func ConvertToFlightData(states OpenSkyJsonStruct) []FlightData {
