@@ -31,7 +31,7 @@ type OpenSkyJsonStruct struct {
 }
 
 func (api Api) ReadFromWebserviceAndConvertJsonToFlightData() []FlightData {
-	jsonStr, e := ReadJsonFromOpenSky()
+	jsonStr, e := readJsonFromOpenSky()
 	if e != nil {
 		log.Print("Could not read data from OpenSky")
 		return nil
@@ -81,7 +81,7 @@ func ConvertToFlightData(states OpenSkyJsonStruct) []FlightData {
 	return result
 }
 
-func ReadJsonFromOpenSky() ([]byte, error) {
+func readJsonFromOpenSky() ([]byte, error) {
 
 	paramaterizedUrl := GetParameterizedUrl()
 
